@@ -1,5 +1,7 @@
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
+import CategoryList from "./components/CategoryList";
+import { posts } from "./data/posts";
 import "./App.css";
 
 export default function App() {
@@ -26,8 +28,7 @@ export default function App() {
 
         {/* Right column: Part A */}
         <aside className="column-sidebar">
-          <div className="placeholder">CategoryList (Part A)</div>
-        </aside>
+          <CategoryList posts={posts} />        </aside>
       </main>
     </div>
   );
