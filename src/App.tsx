@@ -1,10 +1,15 @@
+import { useState } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import CategoryList from "./components/CategoryList";
+import PostList from "./components/PostList";
+import PostDetail from "./components/PostDetail";
 import { posts } from "./data/posts";
 import "./App.css";
 
 export default function App() {
+  const [selectedPost, setSelectedPost] = useState(posts[0]);
+
   return (
     <div>
       <Navbar siteName="Group1" />
@@ -15,20 +20,25 @@ export default function App() {
       />
 
       <main className="container main-layout">
-        {/* Left column: Part B */}
         <section className="column-left">
-          <div className="placeholder">PostList (Part B)</div>
+          <PostList
+            posts={posts}
+            selectedPost={selectedPost}
+            onSelect={setSelectedPost}
+          />
         </section>
 
-        {/* Middle column: Part B + Part C */}
         <section className="column-main">
-          <div className="placeholder">PostDetail (Part B)</div>
-          <div className="placeholder">CommentList + CommentForm (Part C)</div>
+          <PostDetail post={selectedPost} />
+
+          <div className="placeholder">
+            CommentList + CommentForm (Part C)
+          </div>
         </section>
 
-        {/* Right column: Part A */}
         <aside className="column-sidebar">
-          <CategoryList posts={posts} />        </aside>
+          <CategoryList posts={posts} />
+        </aside>
       </main>
     </div>
   );
