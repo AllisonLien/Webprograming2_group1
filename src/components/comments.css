@@ -60,15 +60,14 @@ textarea.comment-input {
 }
 
 .comment-input[aria-invalid="true"] {
-  border-color: var(--color-accent);
+  border-color: var(--color-error);
 }
 
 .comment-error {
-  color: var(--color-accent);
+  color: var(--color-error);
   font-size: 13px;
   font-weight: 600;
 }
-
 .comment-button {
   align-self: flex-start;
   padding: var(--space-1) var(--space-3);
@@ -82,4 +81,10 @@ textarea.comment-input {
 
 .comment-button:hover {
   opacity: 0.9;
+}
+
+.comment-last {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  margin-top: var(--space-1);
 }

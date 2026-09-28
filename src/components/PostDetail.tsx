@@ -15,7 +15,8 @@ export default function PostDetail({ post }: Props) {
 
       <h2>{post.title}</h2>
       <p className="post-detail-meta">
-        {post.date} · {post.category}
+        {post.date}
+        <span className="post-tag">{post.category}</span>
       </p>
 
       <div className="post-detail-content">

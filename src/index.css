@@ -7,6 +7,8 @@
   --color-text: #1F2937;
   --color-text-secondary: #6B7280;
   --color-border: #E5E7EB;
+  --color-accent-soft: #FCEDE8;
+  --color-error: #DC2626;
 
   /* Font */
   --font-main: 'Inter', sans-serif;

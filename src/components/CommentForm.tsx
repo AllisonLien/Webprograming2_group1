@@ -12,8 +12,7 @@ type Props = {
 type Errors = { name?: string; text?: string };
 
 export default function CommentForm({ postId, lastCommenter, onAdd }: Props) {
-  // Name starts as the last commenter so people do not retype it
-  const [name, setName] = useState(lastCommenter);
+  const [name, setName] = useState("");
   const [text, setText] = useState("");
   const [errors, setErrors] = useState<Errors>({});
 
@@ -25,8 +24,8 @@ export default function CommentForm({ postId, lastCommenter, onAdd }: Props) {
     if (name.trim().length < 2) {
       newErrors.name = "Name must be at least 2 characters.";
     }
-    if (text.trim().length < 5) {
-      newErrors.text = "Comment must be at least 5 characters.";
+    if (text.trim().length < 10) {
+      newErrors.text = "Comment must be at least 10 characters.";
     }
     setErrors(newErrors);
     if (newErrors.name || newErrors.text) return;
@@ -39,12 +38,15 @@ export default function CommentForm({ postId, lastCommenter, onAdd }: Props) {
       text: text.trim(),
       date: new Date().toLocaleDateString("en-CA"),
     });
+
+    // Reset the whole form after submit
+    setName("");
     setText("");
   }
 
   return (
     <form className="comment-form" onSubmit={handleSubmit}>
-      <h3 className="card-title">Leave a comment</h3>
+      <h3 className="card-title">Add a Comment</h3>
 
       <label htmlFor="comment-name">Name</label>
       <input
@@ -69,8 +71,12 @@ export default function CommentForm({ postId, lastCommenter, onAdd }: Props) {
       {errors.text && <p className="comment-error">{errors.text}</p>}
 
       <button type="submit" className="comment-button">
-        Post comment
+        Post Comment
       </button>
+
+      {lastCommenter && (
+        <p className="comment-last">Last comment by: {lastCommenter}</p>
+      )}
     </form>
   );
 }
