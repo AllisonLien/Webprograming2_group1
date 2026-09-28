@@ -1,0 +1,85 @@
+/* Part C: comments */
+.comments-card {
+  padding: var(--space-3);
+}
+
+.comment-list {
+  margin-bottom: var(--space-3);
+}
+
+.comment-empty {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.comment-item {
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-size: 14px;
+}
+
+.comment-header small {
+  color: var(--color-text-secondary);
+}
+
+.comment-text {
+  margin-top: var(--space-1);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Form */
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.comment-form label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.comment-input {
+  width: 100%;
+  padding: var(--space-1);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font: inherit;
+}
+
+textarea.comment-input {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.comment-input[aria-invalid="true"] {
+  border-color: var(--color-accent);
+}
+
+.comment-error {
+  color: var(--color-accent);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.comment-button {
+  align-self: flex-start;
+  padding: var(--space-1) var(--space-3);
+  background: var(--color-primary);
+  color: var(--color-surface);
+  border: 0;
+  border-radius: var(--radius);
+  font: inherit;
+  cursor: pointer;
+}
+
+.comment-button:hover {
+  opacity: 0.9;
+}
