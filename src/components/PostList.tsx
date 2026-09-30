@@ -1,4 +1,4 @@
-import type { Post } from "../data/posts";
+import type { Post } from "../types";
 import PostCard from "./PostCard";
 
 type Props = {
