@@ -6,9 +6,19 @@ type Props = {
   onSelect: (post: Post) => void;
 };
 
-export default function PostCard({ post, isSelected, onSelect }: Props) {
-  // The API has no images, so we rotate through our 4 local images
+export default function PostCard({
+  post,
+  isSelected,
+  onSelect,
+}: Props) {
+  // Rotate through our four local images.
   const imageUrl = `/images/post${((post.id - 1) % 4) + 1}.jpg`;
+
+  // Use the first 100 characters as the card preview.
+  const excerpt =
+    post.body.length > 100
+      ? post.body.slice(0, 100) + "..."
+      : post.body;
 
   return (
     <button
@@ -16,11 +26,28 @@ export default function PostCard({ post, isSelected, onSelect }: Props) {
       className={`post-card ${isSelected ? "selected" : ""}`}
       onClick={() => onSelect(post)}
     >
-      <img src={imageUrl} alt={post.title} className="post-card-image" />
+      <img
+        src={imageUrl}
+        alt={post.title}
+        className="post-card-image"
+      />
+
       <span className="post-card-text">
         <strong>{post.title}</strong>
-        <small>{post.tags.join(" · ")}</small>
-        <span>{post.body.slice(0, 80)}...</span>
+
+        <span className="post-tags">
+          {post.tags.map((tag) => (
+            <span key={tag} className="post-tag">
+              {tag}
+            </span>
+          ))}
+        </span>
+
+        <span>{excerpt}</span>
+
+        <small className="post-stats">
+          {post.views} views · {post.reactions.likes} likes
+        </small>
       </span>
     </button>
   );

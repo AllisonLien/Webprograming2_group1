@@ -289,3 +289,33 @@
 .status-text {
   color: var(--color-text-secondary);
 }
+
+/* Arrange tags in a row and wrap when needed. */
+.post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+/* Coral tag pills */
+.post-tags .post-tag {
+  display: inline-block;
+  margin: 0;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background-color: #fceee9;
+  color: #c74b38;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* Views and reaction counts */
+.post-stats {
+  display: block;
+  margin: 8px 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+}
