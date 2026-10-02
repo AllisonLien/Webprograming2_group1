@@ -82,9 +82,3 @@ textarea.comment-input {
 .comment-button:hover {
   opacity: 0.9;
 }
-
-.comment-last {
-  color: var(--color-text-secondary);
-  font-size: 13px;
-  margin-top: var(--space-1);
-}
