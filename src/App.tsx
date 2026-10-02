@@ -6,8 +6,7 @@ import PostList from "./components/PostList";
 import PostDetail from "./components/PostDetail";
 import CommentList from "./components/CommentList";
 import CommentForm from "./components/CommentForm";
-import type { Post, PostsResponse } from "./types";
-import type { Comment } from "./data/posts";
+import type { Post, PostsResponse, Comment, CommentsResponse } from "./types";
 import "./App.css";
 
 export default function App() {
@@ -16,8 +15,14 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Part C: locally added comments, grouped by post id
   const [comments, setComments] = useState<Record<number, Comment[]>>({});
   const [lastCommenter, setLastCommenter] = useState("");
+
+  // Part C: comments fetched from the API, grouped by post id.
+  // A post id missing from this object means it hasn't loaded yet.
+  const [apiComments, setApiComments] = useState<Record<number, Comment[]>>({});
+  const commentsLoading = selectedPost ? !(selectedPost.id in apiComments) : false;
 
   useEffect(() => {
     fetch("https://dummyjson.com/posts?limit=10")
@@ -38,6 +43,33 @@ export default function App() {
         setLoading(false);
       });
   }, []);
+
+  // Part C: fetch comments for whichever post is selected
+  useEffect(() => {
+    if (!selectedPost) return;
+
+    fetch(`https://dummyjson.com/posts/${selectedPost.id}/comments`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Request failed");
+        }
+        return response.json();
+      })
+      .then((data: CommentsResponse) => {
+        const mapped: Comment[] = data.comments.map((c) => ({
+          id: c.id,
+          postId: c.postId,
+          name: c.user.fullName,
+          text: c.body,
+          source: "api",
+        }));
+        setApiComments((prev) => ({ ...prev, [selectedPost.id]: mapped }));
+      })
+      .catch(() => {
+        // Keep showing locally added comments even if the API fails
+        setApiComments((prev) => ({ ...prev, [selectedPost.id]: [] }));
+      });
+  }, [selectedPost]);
 
   function addComment(comment: Comment) {
     setComments((prev) => ({
@@ -87,7 +119,13 @@ export default function App() {
             <PostDetail post={selectedPost} />
 
             <section className="card comments-card">
-              <CommentList comments={comments[selectedPost.id] ?? []} />
+              <CommentList
+                comments={[
+                  ...(apiComments[selectedPost.id] ?? []),
+                  ...(comments[selectedPost.id] ?? []),
+                ]}
+                loading={commentsLoading}
+              />
               <CommentForm
                 key={selectedPost.id}
                 postId={selectedPost.id}

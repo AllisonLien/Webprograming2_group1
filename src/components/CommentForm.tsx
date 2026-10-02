@@ -1,7 +1,10 @@
-import { useState } from "react";
-import type { FormEvent } from "react";
-import type { Comment } from "../data/posts";
+import { useForm } from "react-hook-form";
+import type { Comment } from "../types";
 import "./comments.css";
+
+// Module-level counter so ids stay unique even if the form remounts
+// when switching between posts
+let nextLocalId = 1;
 
 type Props = {
   postId: number;
@@ -9,74 +12,86 @@ type Props = {
   onAdd: (comment: Comment) => void;
 };
 
-type Errors = { name?: string; text?: string };
+// What the form collects
+type FormValues = {
+  name: string;
+  email: string;
+  text: string;
+};
+
+// A simple email pattern, good enough for form validation
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function CommentForm({ postId, lastCommenter, onAdd }: Props) {
-  const [name, setName] = useState("");
-  const [text, setText] = useState("");
-  const [errors, setErrors] = useState<Errors>({});
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({
+    defaultValues: { name: lastCommenter, email: "", text: "" },
+  });
 
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-
-    // Validation: spaces do not count, so trim first
-    const newErrors: Errors = {};
-    if (name.trim().length < 2) {
-      newErrors.name = "Name must be at least 2 characters.";
-    }
-    if (text.trim().length < 10) {
-      newErrors.text = "Comment must be at least 10 characters.";
-    }
-    setErrors(newErrors);
-    if (newErrors.name || newErrors.text) return;
-
-    // Send the new comment up to App
+  function onSubmit(values: FormValues) {
     onAdd({
-      id: Date.now(),
+      id: nextLocalId++,
       postId,
-      name: name.trim(),
-      text: text.trim(),
+      name: values.name.trim(),
+      email: values.email.trim(),
+      text: values.text.trim(),
       date: new Date().toLocaleDateString("en-CA"),
+      source: "local",
     });
 
-    // Reset the whole form after submit
-    setName("");
-    setText("");
+    // Keep the name, clear email and comment
+    reset({ name: values.name.trim(), email: "", text: "" });
   }
 
   return (
-    <form className="comment-form" onSubmit={handleSubmit}>
+    <form className="comment-form" onSubmit={handleSubmit(onSubmit)} noValidate>
       <h3 className="card-title">Add a Comment</h3>
 
       <label htmlFor="comment-name">Name</label>
       <input
         id="comment-name"
         className="comment-input"
-        value={name}
-        maxLength={30}
         aria-invalid={!!errors.name}
-        onChange={(e) => setName(e.target.value)}
+        {...register("name", {
+          required: "Name is required.",
+          minLength: { value: 2, message: "Name must contain at least 2 characters." },
+          maxLength: 30,
+        })}
       />
-      {errors.name && <p className="comment-error">{errors.name}</p>}
+      {errors.name && <p className="comment-error">{errors.name.message}</p>}
+
+      <label htmlFor="comment-email">Email</label>
+      <input
+        id="comment-email"
+        className="comment-input"
+        aria-invalid={!!errors.email}
+        {...register("email", {
+          required: "Email is required.",
+          pattern: { value: EMAIL_PATTERN, message: "Please enter a valid email address." },
+        })}
+      />
+      {errors.email && <p className="comment-error">{errors.email.message}</p>}
 
       <label htmlFor="comment-text">Comment</label>
       <textarea
         id="comment-text"
         className="comment-input"
-        value={text}
-        maxLength={300}
         aria-invalid={!!errors.text}
-        onChange={(e) => setText(e.target.value)}
+        {...register("text", {
+          required: "Comment is required.",
+          minLength: { value: 10, message: "Comment must be at least 10 characters." },
+          maxLength: { value: 500, message: "Comment must be 500 characters or fewer." },
+        })}
       />
-      {errors.text && <p className="comment-error">{errors.text}</p>}
+      {errors.text && <p className="comment-error">{errors.text.message}</p>}
 
       <button type="submit" className="comment-button">
         Post Comment
       </button>
-
-      {lastCommenter && (
-        <p className="comment-last">Last comment by: {lastCommenter}</p>
-      )}
     </form>
   );
 }
