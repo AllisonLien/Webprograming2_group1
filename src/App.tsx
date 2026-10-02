@@ -14,6 +14,7 @@ export default function App() {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedTag, setSelectedTag] = useState("All");
 
   // Part C: locally added comments, grouped by post id
   const [comments, setComments] = useState<Record<number, Comment[]>>({});
@@ -70,7 +71,21 @@ export default function App() {
         setApiComments((prev) => ({ ...prev, [selectedPost.id]: [] }));
       });
   }, [selectedPost]);
+  // Part A: only keep posts that have the selected tag
+  const filteredPosts =
+    selectedTag === "All"
+      ? posts
+      : posts.filter((p) => p.tags.includes(selectedTag));
 
+  function handleSelectTag(tag: string) {
+    setSelectedTag(tag);
+
+    // select the first post of the new list so the detail always matches the list on the left
+    const list = tag === "All" ? posts : posts.filter((p) => p.tags.includes(tag));
+    if (list.length > 0) {
+      setSelectedPost(list[0]);
+    }
+  }
   function addComment(comment: Comment) {
     setComments((prev) => ({
       ...prev,
@@ -107,9 +122,22 @@ export default function App() {
 
       {!loading && !error && selectedPost && (
         <main className="container main-layout">
-          <section className="column-left">
+                   <section className="column-left">
+            {selectedTag !== "All" && (
+              <p className="filter-info">
+                Showing posts tagged <strong>{selectedTag}</strong> ({filteredPosts.length})
+                <button
+                  type="button"
+                  className="filter-clear"
+                  onClick={() => handleSelectTag("All")}
+                >
+                  Clear
+                </button>
+              </p>
+            )}
+
             <PostList
-              posts={posts}
+              posts={filteredPosts}
               selectedPost={selectedPost}
               onSelect={setSelectedPost}
             />
@@ -136,7 +164,11 @@ export default function App() {
           </section>
 
           <aside className="column-sidebar">
-            <CategoryList posts={posts} />
+              <CategoryList
+              posts={posts}
+              selectedTag={selectedTag}
+              onSelectTag={handleSelectTag}
+            />
           </aside>
         </main>
       )}

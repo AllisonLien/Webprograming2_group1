@@ -59,7 +59,7 @@ export default function CommentForm({ postId, lastCommenter, onAdd }: Props) {
         {...register("name", {
           required: "Name is required.",
           minLength: { value: 2, message: "Name must contain at least 2 characters." },
-          maxLength: 30,
+          maxLength: { value: 30, message: "Name must be 30 characters or fewer." },
         })}
       />
       {errors.name && <p className="comment-error">{errors.name.message}</p>}
